@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'Home.dart';
+import 'ListViewDados.dart';
 
 void main() => runApp(MaterialApp(
-  home: Home(),
+  home: ListViewDados(),
   debugShowCheckedModeBanner: false,
 ));

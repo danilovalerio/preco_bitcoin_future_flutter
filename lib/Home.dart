@@ -18,7 +18,6 @@ class _HomeState extends State<Home> {
     response = await get(url);
 
     return json.decode(response.body);
-
   }
 
   @override
