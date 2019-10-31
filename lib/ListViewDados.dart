@@ -42,7 +42,11 @@ class _ListViewDadosState extends State<ListViewDados> {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
             case ConnectionState.waiting:
-              return CircularProgressIndicator();
+              return Center(
+                child:  CircularProgressIndicator(
+                  backgroundColor: Colors.yellow,
+                ),
+              );
               break;
             case ConnectionState.active:
             case ConnectionState.done:
