@@ -57,9 +57,16 @@ class _ListViewDadosState extends State<ListViewDados> {
                 return ListView.builder(
                     itemCount: snapshot.data.length,
                     itemBuilder: (context, index) {
+
+                      List<Postagem> lista = snapshot.data;
+                      Postagem post = lista[index];
+
                       return ListTile(
-                        title: Text("Teste title"),
-                        subtitle: Text("Teste subtitle"),
+                        title: Text(post.title,
+                        style: TextStyle(
+                          fontSize: 12,
+                        ),),
+                        subtitle: Text(post.id.toString()),
                       );
                     });
               }
