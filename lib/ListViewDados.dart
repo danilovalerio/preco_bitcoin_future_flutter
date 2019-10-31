@@ -30,54 +30,162 @@ class _ListViewDadosState extends State<ListViewDados> {
     return postagens;
   }
 
+  _post() async {
+
+    var corpo = json.encode(
+      {
+        "userId": 1,
+        "id": null,
+        "title":"Titulo teste",
+        "body": "Corpo da postagem"
+      }
+    );
+
+    Response response = await post(
+        _urlBase + "/posts",
+      headers: {
+          "Content-type":"application/json; charset=UTF-8"
+      },
+      body: corpo
+    );
+
+    print("resposta: ${response.statusCode}");
+    print("resposta: ${response.body}");
+
+  }
+
+  _put() async { //precisa do objeto inteiro para atualizar
+
+    var corpo = json.encode(
+        {
+          "userId": 120,
+          "id": null,
+          "title":"Titulo alterado",
+          "body": "Corpo da postagem altearado"
+        }
+    );
+
+    Response response = await put(
+        _urlBase + "/posts/2",
+        headers: {
+          "Content-type":"application/json; charset=UTF-8"
+        },
+        body: corpo
+    );
+
+    print("resposta: ${response.statusCode}");
+    print("resposta: ${response.body}");
+
+
+  }
+
+  _patch() async {
+    var corpo = json.encode(
+        {
+          "userId": 1,
+          "body": "Corpo da postagem"
+        }
+    );
+
+    Response response = await patch(
+        _urlBase + "/posts",
+        headers: {
+          "Content-type":"application/json; charset=UTF-8"
+        },
+        body: corpo
+    );
+
+    print("resposta: ${response.statusCode}");
+    print("resposta: ${response.body}");
+
+
+  }
+  _delete() async {
+
+    Response response = await delete(
+        _urlBase + "/posts/2",
+    );
+
+    print("resposta: ${response.statusCode}");
+    print("resposta: ${response.body}");
+
+
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Consumo de serviços - Future"),
-      ),
-      body: FutureBuilder<List<Postagem>>(
-        future: _recuperarPostagens(),
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.none:
-            case ConnectionState.waiting:
-              return Center(
-                child:  CircularProgressIndicator(
-                  backgroundColor: Colors.yellow,
-                ),
-              );
-              break;
-            case ConnectionState.active:
-            case ConnectionState.done:
-              if (snapshot.hasError) {
-                print("Erro ao recuperar dados.");
-              } else {
-                print("lista carregou.");
-                return ListView.builder(
-                    itemCount: snapshot.data.length,
-                    itemBuilder: (context, index) {
+        appBar: AppBar(
+          title: Text("Consumo de serviços - Future"),
+        ),
+        body: Container(
+          padding: EdgeInsets.all(16),
+          child: Column(
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  RaisedButton(
+                    child: Text("Salvar"),
+                    onPressed: _post,
+                  ),
+                  RaisedButton(
+                    child: Text("Atualizar"),
+                    onPressed: _put,
+                  ),
+                  RaisedButton(
+                    child: Text("Deletar"),
+                    onPressed: _delete,
+                  ),
+                ],
+              ),
+              Expanded(
+                child: FutureBuilder<List<Postagem>>(
+                  future: _recuperarPostagens(),
+                  builder: (context, snapshot) {
+                    switch (snapshot.connectionState) {
+                      case ConnectionState.none:
+                      case ConnectionState.waiting:
+                        return Center(
+                          child: CircularProgressIndicator(
+                            backgroundColor: Colors.yellow,
+                          ),
+                        );
+                        break;
+                      case ConnectionState.active:
+                      case ConnectionState.done:
+                        if (snapshot.hasError) {
+                          print("Erro ao recuperar dados.");
+                        } else {
+                          print("lista carregou.");
+                          return ListView.builder(
+                              itemCount: snapshot.data.length,
+                              itemBuilder: (context, index) {
+                                List<Postagem> lista = snapshot.data;
+                                Postagem post = lista[index];
 
-                      List<Postagem> lista = snapshot.data;
-                      Postagem post = lista[index];
+                                return ListTile(
+                                  title: Text(
+                                    post.title,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                  subtitle: Text(post.id.toString()),
+                                );
+                              });
+                        }
+                        break;
+                    }
 
-                      return ListTile(
-                        title: Text(post.title,
-                        style: TextStyle(
-                          fontSize: 12,
-                        ),),
-                        subtitle: Text(post.id.toString()),
-                      );
-                    });
-              }
-              break;
-          }
-
-          return Center(
+                    return Center(
 //            child: Text(resutado),
-          );
-        },
-      ),
-    );
+                        );
+                  },
+                ),
+              )
+            ],
+          ),
+        ));
   }
 }
